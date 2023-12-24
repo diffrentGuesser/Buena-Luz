@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buena Luz</title>
+    <style>
+         .slidersContainer {
+            display: none;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #595789;
+        }
+
+        header {
+            background-color: #202547;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            width: 350px;
+            height: 75px; /* Corrected value */
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #202547;
+            padding: 0.5em;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5em 1em;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            background-color: #475b6d;
+        }
+
+        section {
+            padding: 2em;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        h2 {
+            color: #ffffff;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1em;
+        }
+
+        footer {
+            background-color: #202547;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .booking-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input, select, button {
+            padding: 0.5em;
+            margin: 0.5em 0;
+            width: 100%;
+            
+            outline: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+            color: #ffffff;
+            outline: none;
+        }
+
+        button {
+            background-color: #202547;
+            color: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        button:hover {
+            background-color: #475b6d;
+            outline: none;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 0.5em 0;
+        }
+        
+        .booking-form label,
+        .booking-form label[for="name"],
+        .booking-form label[for="email"],
+        .booking-form label[for="roomType"],
+        .booking-form label[for="roomCategory"],
+        .booking-form label[for="fitness"] {
+            color: black;
+        }
+
+        .booking-form label[for="creditCard"],
+        .booking-form label[for="expiryDate"],
+        .booking-form label[for="civ"] {
+            color: black;
+        }
+
+       
+        </style>
+
+    <script>
+        const rooms = [
+            { number: 101, unlocked: false },
+            { number: 102, unlocked: false },
+            // Add more rooms as needed
+        ];
+
+        function showSliders() {
+            // Toggle the display of the sliders container
+            const slidersContainer = document.getElementById('slidersContainer');
+            const isSlidersHidden = slidersContainer.style.display === 'none';
+
+            // Toggle the display property based on the current state
+            slidersContainer.style.display = isSlidersHidden ? 'block' : 'none';
+
+            // Save the state in localStorage
+            localStorage.setItem('slidersHidden', slidersContainer.style.display === 'none');
+        }
+        function answerQuestion(question) {
+            // You can customize this function to handle different questions
+            if (question.toLowerCase().includes("restaurant") && question.toLowerCase().includes("open") && question.toLowerCase().includes("today")) {
+                document.getElementById('aiBotResponse').innerText = "The restaurant is open until 21:00.";
+            } else {
+                document.getElementById('aiBotResponse').innerText = "I'm sorry, I don't have the information you're looking for.";
+            }
+        }
+        function unlockRoom() {
+    const enteredCode = prompt("Enter your purchase code:");
+
+    if (enteredCode === generatedCode) {
+        alert("Purchase code is valid! You can now control your room.");
+        showSliders();
+    } else {
+        alert("Invalid purchase code. Please try again.");
+    }
+}
+        function askQuestion() {
+            const question = document.getElementById('questionInput').value;
+            if (question.trim() !== "") {
+                answerQuestion(question);
+            } else {
+                alert("Please enter a question.");
+            }
+        }
+        function restoreSlidersState() {
+    // Retrieve the state from localStorage
+    const slidersHidden = localStorage.getItem('slidersHidden');
+
+    // Set the initial state based on the retrieved value
+    const slidersContainer = document.getElementById('slidersContainer');
+    if (slidersHidden === 'true') {
+        // If hidden, keep it hidden
+        slidersContainer.style.display = 'none';
+    } else {
+        // Otherwise, keep it visible
+        slidersContainer.style.display = 'block';
+    }
+}
+
+        function showSection(sectionId) {
+            var sections = document.querySelectorAll('section');
+            sections.forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            if (sectionId === 'aiBot') {
+                document.getElementById('aiBot').style.display = 'block';
+            } else {
+                var selectedSection = document.getElementById(sectionId);
+                if (selectedSection) {
+                    selectedSection.style.display = 'block';
+                }
+            }
+        }
+
+        function generateRandomCode() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let code = '';
+            for (let i = 0; i < 10; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                code += characters.charAt(randomIndex);
+            }
+            return code;
+        }
+
+        function validatePurchaseCode() {
+    const enteredCode = prompt("Enter your purchase code:");
+
+    if (enteredCode === generatedCode) {
+        alert("Purchase code is valid! You can now control your room.");
+        showSliders();  // Call showSliders when the purchase code is valid
+    } else {
+        alert("Invalid purchase code. Please try again.");
+    }
+}
+
+        function showCreditCardForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const roomType = document.getElementById('roomType').value;
+            const roomCategory = document.getElementById('roomCategory').value;
+            const fitness = document.getElementById('fitness').checked;
+
+            if (!name || !email) {
+                alert('Please fill in all personal information fields.');
+                return;
+            }
+
+            document.getElementById('personalInfoForm').style.display = 'none';
+            document.getElementById('creditCardForm').style.display = 'block';
+
+            // Display booking details
+            const details = `Name: ${name}\nEmail: ${email}\nRoom Type: ${roomType}\nRoom Category: ${roomCategory}\nFitness: ${fitness ? 'Yes' : 'No'}`;
+            alert(`Booking Details:\n\n${details}`);
+        }
+
+        function submitForm() {
+    const creditCard = document.getElementById('creditCard').value;
+
+    if (!creditCard) {
+        alert('Please enter credit card information.');
+        return;
+    }
+
+    const randomCode = generateRandomCode();
+
+    generatedCode = randomCode;
+
+    document.getElementById('purchaseCodeDisplay').innerHTML = `<span style="color: black;">Your Purchase Code: ${randomCode}</span>`;
+
+    // Show the sliders container
+    showSliders();
+}
+
+window.onload = function() {
+    restoreSlidersState();
+}
+
+        let generatedCode;
+    </script>
+</head>
+<body>
+    <header onclick="showSection('home')" style="background-color: #202547;">
+        <img src="C:\Users\leone\OneDrive\Bilder\Screenshots\Screenshot 2023-12-21 221652.png" class="logo-img">
+    </header>
+
+    <nav>
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('rooms')">Rooms</a>
+        <a onclick="showSection('aiBot')">AI Bot</a>
+        <a onclick="showSection('contact')">Contact</a>
+        <a onclick="showSection('book')">Book Now</a>
+    </nav>
+
+    <section id="home">
+        <h2>Welcome to Buena Luz</h2>
+        <p>Your perfect destination for a relaxing stay in Mallorca.</p>
+        <img src="C:\Users\leone\Downloads\Firefly Hotel in mallorca an einem Strand mit ungefähr 30 Zimmer 70458.jpg" alt="Hotel Exterior">
+    </section>
+
+    <section id="rooms" style="display: none;">
+        <h2>Our Rooms</h2>
+        <button onclick="unlockRoom()">Unlock Room</button>
+
+        <!-- Container for sliders -->
+        <div id="slidersContainer">
+            <!-- Slider for volume control -->
+            <label for="volumeSlider">Volume Control:</label>
+            <input type="range" id="volumeSlider" min="0" max="100" step="1" value="50">
+
+            <!-- Slider for brightness control -->
+            <label for="brightnessSlider">Brightness Control:</label>
+            <input type="range" id="brightnessSlider" min="0" max="100" step="1" value="50">
+        </div>
+    </section>
+
+    <section id="aiBot" style="display: none;">
+        <h2>AI Bot</h2>
+        <div>
+            <label for="questionInput">Ask a question:</label>
+            <input type="text" id="questionInput">
+            <button onclick="askQuestion()">Ask</button>
+        </div>
+        <div id="aiBotResponse"></div>
+    </section>
+
+    <section id="contact" style="display: none;">
+        <h2>Contact Us</h2>
+        <p>For inquiries and reservations, please contact us at info@buenaluz.com</p>
+    </section>
+
+    <section id="book" style="display: none;">
+        <h2>Book Your Stay</h2>
+        <div class="booking-form" id="personalInfoForm">
+            <form onsubmit="event.preventDefault(); showCreditCardForm();">
+                <label for="name"></label>
+                <input type="text" placeholder="Name" id="name" required>
+
+                <label for="email"></label>
+                <input type="email" placeholder="Email" id="email" required>
+
+                <label for="roomType">Room Type:</label>
+                <select id="roomType" required>
+                    <option value="normal">Normal</option>
+                    <option value="luxury">Luxury</option>
+                </select>
+
+                <label for="roomCategory">Room Category:</label>
+                <select id="roomCategory" required>
+                    <option value="double">Double</option>
+                    <option value="family">Family</option>
+                </select>
+                <label for="fitness">Fitness:</label>
+                <input type="checkbox" id="fitness">
+
+                <button type="submit">Continue</button>
+            </form>
+        </div>
+
+        <div class="booking-form" id="creditCardForm" style="display: none;">
+            <form onsubmit="event.preventDefault(); submitForm();">
+                <label for="creditCard"></label>
+                <input type="text" id="creditCard" placeholder="Enter your credit card number" required>
+
+                <label for="expiryDate"></label>
+                <input type="text" id="expiryDate" placeholder="MM/YY" required>
+
+                <label for="civ"></label>
+                <input type="text" id="civ" placeholder="Enter the security code" required>
+
+                <button type="submit" id="purchaseButton">Purchase</button>
+            </form>
+
+            <!-- Display the purchase code here -->
+            <p id="purchaseCodeDisplay"></p>
+        </div>
+    </section>
+</body>
+</html>
